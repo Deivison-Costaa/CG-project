@@ -73,11 +73,11 @@ Isso vai gerar um binário chamado `apk`.
 
 ##  Melhorias futuras
 
-* **Instanced Rendering** para vegetação -> menos chamadas de draw, mais FPS.
 * **Arquitetura do código** -> separar a lógica num `Renderer`, deixar `main.cpp` mais limpo.
 * **Água mais bonita** -> ondas de Gerstner (precisaria de um pc mais potente antes disso), caustics no fundo.
-* **Resource Manager** → evitar carregar a mesma textura/modelo várias vezes.
-* **Interatividade** → colisão da câmera com terreno, ondulações na água quando algo encosta nela.
+* **Resource Manager** -> evitar carregar a mesma textura/modelo várias vezes.
+* **Interatividade** -> colisão da câmera com terreno, ondulações na água quando algo encosta nela.
+* Ver formas de otimizar o pra aumentar a eficiência.
 
 ---
 
