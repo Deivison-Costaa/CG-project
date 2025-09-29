@@ -26,9 +26,9 @@ public:
 
     /**
      * @brief Atualiza o estado do sol.
-     * @param gameTime Um valor de 0.0 a 1.0 que representa o progresso no ciclo de 24h.
+     * @param sunTime Um valor de 0.0 a 1.0 que representa o progresso no ciclo de 24h.
      */
-    void Update(float gameTime);
+    void Update(float sunTime);
 
     /**
      * @brief Desenha a esfera do sol na cena.

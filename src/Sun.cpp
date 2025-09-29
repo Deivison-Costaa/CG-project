@@ -31,11 +31,11 @@ Sun::~Sun()
 /**
  * @brief Atualiza a posição e as cores do sol para simular o ciclo dia/noite.
  */
-void Sun::Update(float gameTime)
+void Sun::Update(float sunTime)
 {
     // 1. Calcula a posição do sol em uma órbita circular.
-    // 'gameTime' (0.0 a 1.0) é mapeado para um ângulo de 0 a 2*PI.
-    float sunAngle = gameTime * 2.0f * glm::pi<float>();
+    // 'sunTime' (0.0 a 1.0) é mapeado para um ângulo de 0 a 2*PI.
+    float sunAngle = sunTime * 2.0f * glm::pi<float>();
     float orbitRadius = 400.0f;
     m_position.x = cos(sunAngle) * orbitRadius;
     m_position.y = sin(sunAngle) * orbitRadius; // O movimento no eixo Y simula o nascer e o pôr do sol.

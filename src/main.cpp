@@ -35,27 +35,27 @@ const float WATER_HEIGHT = -13.0f; // Coordenada Y da superfície da água
 
 // Estado da Câmara
 Camera camera(glm::vec3(0.0f, 30.0f, 100.0f)); // Objeto da câmera principal
-float lastX = SCR_WIDTH / 2.0f;// Guarda a última posição X do rato
-float lastY = SCR_HEIGHT / 2.0f;// Guarda a última posição Y do rato
-bool firstMouse = true;// Controla o primeiro movimento do rato
+float lastX = SCR_WIDTH / 2.0f;                // Guarda a última posição X do rato
+float lastY = SCR_HEIGHT / 2.0f;               // Guarda a última posição Y do rato
+bool firstMouse = true;                        // Controla o primeiro movimento do rato
 
 // Controlo de Tempo
 float deltaTime = 0.0f; // Tempo decorrido entre o frame atual e o anterior
 float lastFrame = 0.0f; // Registo de tempo do último frame
 
 // Ciclo Dia/Noite
-float gameTime = 0.25f;   // Progresso do ciclo diário (0.0 a 1.0)
-float timeScale = 0.001f; // Multiplicador da velocidade do tempo
+float sunTime = 0.25f;    // Progresso do ciclo diário (0.0 a 1.0)
+float timeScale = 0.01f; // Multiplicador da velocidade do tempo
 
 // Animação da Água
-float waterMoveFactor = 0.0f;   // Deslocamento para a textura de distorção da água
-const float WAVE_SPEED = 0.03f; // Velocidade de movimento das ondas
+float waterMoveFactor = 0.0f;  // Deslocamento para a textura de distorção da água
+const float WAVE_SPEED = 1.3f; // Velocidade de movimento das ondas
 
 // Modo Cinemático
-bool cinematicMode = false;// Flag para ativar/desativar a câmara cinemática
-float pathTime = 0.0f;// Posição atual (parâmetro 't') no caminho da câmara
-float pathSpeed = 10.0f;// Velocidade da câmara cinemática
-float y_offset = 30.0f;// Elevação adicional para os pontos de controlo
+bool cinematicMode = false;           // Flag para ativar/desativar a câmara cinemática
+float pathTime = 0.0f;                // Posição atual (parâmetro 't') no caminho da câmara
+float pathSpeed = 10.0f;              // Velocidade da câmara cinemática
+float y_offset = 30.0f;               // Elevação adicional para os pontos de controlo
 std::vector<glm::vec3> controlPoints; // Pontos que definem o caminho da câmara
 
 int main()
@@ -87,8 +87,8 @@ int main()
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CLIP_DISTANCE0); // Habilita o clipping plane para a água
-    //esse escopo aqui tá aberto por que o glfwterminate tava finalizando tudo antes dos destrutores serem chamados,
-    //causando falha de segmentação, isso aqui garante que isso não ocorra.
+    // esse escopo aqui tá aberto por que o glfwterminate tava finalizando tudo antes dos destrutores serem chamados,
+    // causando falha de segmentação, isso aqui garante que isso não ocorra.
     {
         // Shaders e Objetos
         Shader terrainShader("shaders/terrain.vert", "shaders/terrain.frag");
@@ -143,9 +143,9 @@ int main()
             processInput(window);
 
             // Atualizações
-            gameTime += timeScale * deltaTime;
-            gameTime = fmodf(gameTime, 1.0f);
-            sun.Update(gameTime);
+            sunTime += timeScale * deltaTime;
+            sunTime = fmodf(sunTime, 1.0f);
+            sun.Update(sunTime);
             waterMoveFactor += WAVE_SPEED * deltaTime;
             waterMoveFactor = fmod(waterMoveFactor, 1.0f);
 

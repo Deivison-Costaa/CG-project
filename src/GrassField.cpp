@@ -111,7 +111,7 @@ void GrassField::setupInstancing()
             break;
     }
 
-    std::cout << "Numero de tufos de grama gerados: " << instanceMatrices.size() << std::endl;
+    //std::cout << "Numero de tufos de grama gerados: " << instanceMatrices.size() << std::endl;
 
     // Se nenhuma instância foi gerada, não há necessidade de configurar os buffers.
     if (instanceMatrices.empty())

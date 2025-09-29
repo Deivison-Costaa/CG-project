@@ -16,7 +16,7 @@ uniform sampler2D normalMap; // Mapa de normais para iluminação detalhada
 uniform float moveFactor;  // Fator de tempo para animar as ondas
 uniform vec3 lightColor;
 
-const float WAVE_STRENGTH = 0.2; // Controla a intensidade da distorção
+const float WAVE_STRENGTH = 0.08; // Controla a intensidade da distorção
 
 void main()
 {
@@ -26,7 +26,8 @@ void main()
     // Converte a posição de clip-space para coordenadas de textura (NDC)
     vec2 ndc = (clipSpace.xy / clipSpace.w) * 0.5 + 0.5;
     vec2 refractTexCoords = ndc;
-    vec2 reflectTexCoords = vec2(ndc.x, 1.0 - ndc.y); // Inverte Y para a reflexão
+    // Inverte Y para a reflexão
+    vec2 reflectTexCoords = vec2(ndc.x, 1.0 - ndc.y);
 
     // Distorce as coordenadas de textura usando o DUDV map para criar o efeito de ondas
     vec2 distortion = (texture(dudvMap, textureCoords + moveFactor).rg * 2.0 - 1.0) * WAVE_STRENGTH;
@@ -44,9 +45,11 @@ void main()
     // Obtém a normal do normal map para iluminação detalhada
     vec3 normal = normalize(texture(normalMap, textureCoords).rgb * 2.0 - 1.0);
 
-    // Calcula o fator Fresnel para misturar reflexão e refração
+    //Calcula o fator Fresnel usando a aproximação de Schlick para misturar reflexão e refração
     // Ângulos rasos refletem mais, ângulos diretos refratam mais
-    float fresnelFactor = pow(max(dot(viewVector, normal), 0.0), 1.5);
+    float R0 = 0.02; // era pra ser (n1-n2 / n1+n2)², só que esse valor já serve como base
+    float cosTheta = max(dot(viewVector, normal), 0.0);
+    float fresnelFactor = R0 + (1.0 - R0) * pow(1.0 - cosTheta, 5.0);
 
     // Mistura as duas cores com base no efeito Fresnel
     vec4 finalColor = mix(refractColor, reflectColor, fresnelFactor);
