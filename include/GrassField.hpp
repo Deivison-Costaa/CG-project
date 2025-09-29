@@ -5,24 +5,24 @@
 #include <vector>
 #include "Shader.hpp"
 #include "Terrain.hpp"
+#include "Model.hpp"
+#include "db_perlin.hpp" // <-- ADICIONE ESTA LINHA
 
 class GrassField
 {
 public:
-    GrassField(Terrain &terrain, Shader &shader, float spacing = 2.0f);
+    GrassField(Terrain &terrain, Shader &shader, const std::string &modelPath, const std::string &texturePath, float spacing=3.0f);
     ~GrassField();
 
     void Draw(const glm::mat4 &view, const glm::mat4 &projection);
 
 private:
-    void setupMesh();
     void setupInstancing();
 
-    Shader &shader;
     Terrain &terrain;
+    Shader &shader;
+    Model grassModel;
     float spacing;
-
-    unsigned int VAO, VBO, instanceVBO;
     std::vector<glm::mat4> instanceMatrices;
-    unsigned int vertexCount;
+    unsigned int instanceVBO;
 };

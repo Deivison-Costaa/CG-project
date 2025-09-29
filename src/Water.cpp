@@ -1,11 +1,17 @@
 #include "Water.hpp"
 #include <vector>
 
-Water::Water(float w, float d, Shader &sh) : width(w), depth(d), shader(sh)
+/**
+ * @brief O construtor apenas inicializa a malha da água.
+ */
+Water::Water(float width, float depth, Shader &shader) : m_width(width), m_depth(depth)
 {
     setupMesh();
 }
 
+/**
+ * @brief Destrutor que libera os buffers da GPU.
+ */
 Water::~Water()
 {
     glDeleteVertexArrays(1, &VAO);
@@ -13,19 +19,28 @@ Water::~Water()
     glDeleteBuffers(1, &EBO);
 }
 
+/**
+ * @brief Cria e configura a geometria de um plano simples.
+ * Esta malha servirá como a superfície sobre a qual os shaders desenharão os efeitos da água.
+ */
 void Water::setupMesh()
 {
-    float halfW = width / 2.0f;
-    float halfD = depth / 2.0f;
+    float halfW = m_width / 2.0f;
+    float halfD = m_depth / 2.0f;
 
+    // A malha precisa apenas das posições dos vértices.
+    // Todos os outros cálculos (normais, texcoords, etc.) são feitos no shader.
     float vertices[] = {
-        -halfW, 0.0f, -halfD, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
-        halfW, 0.0f, -halfD, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
-        halfW, 0.0f, halfD, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
-        -halfW, 0.0f, halfD, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f};
+        // Posição (x, y, z)
+        -halfW, 0.0f, -halfD,
+        halfW, 0.0f, -halfD,
+        halfW, 0.0f, halfD,
+        -halfW, 0.0f, halfD};
 
+    // Índices para desenhar o plano usando dois triângulos.
     unsigned int indices[] = {0, 1, 2, 2, 3, 0};
 
+    // Configuração padrão dos buffers (VAO, VBO, EBO).
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
@@ -38,30 +53,25 @@ void Water::setupMesh()
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    // posição
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)0);
+    // Configura o atributo de vértice para a posição (layout = 0).
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
     glEnableVertexAttribArray(0);
-    // normal
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-    // texcoords
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(6 * sizeof(float)));
-    glEnableVertexAttribArray(2);
 
     glBindVertexArray(0);
 }
 
-void Water::Draw(const glm::mat4 &view, const glm::mat4 &projection, float time)
+/**
+ * @brief Desenha a malha da água.
+ * Esta função é intencionalmente simples. Ela apenas emite o comando de desenho.
+ */
+void Water::Draw(const glm::mat4 &modelMatrix)
 {
-    shader.use();
-    
-    glm::mat4 model = glm::mat4(1.0f); // identidade
-    shader.setMat4("model", model);
-    shader.setMat4("view", view);
-    shader.setMat4("projection", projection);
-    shader.setFloat("time", time); // para ondulações animadas
+    // Nota de design: A ativação do shader da água e o envio de todos os uniforms
+    // (texturas de reflexão/refração, mapas DUDV/normal, etc.)
+    // são responsabilidade do chamador (neste caso, o loop principal em main.cpp).
+    // Isso mantém a classe Water focada apenas na sua geometria.
 
     glBindVertexArray(VAO);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); // Desenha os 2 triângulos (6 vértices).
     glBindVertexArray(0);
 }

@@ -1,30 +1,34 @@
-# Compilador
 CXX = g++
-CXXFLAGS = -std=c++17 -Iinclude -I/usr/include
-
-# Bibliotecas
-LIBS = -lglfw -ldl -lGL -lassimp
-
-# Fontes e objeto
-SRCS = src/main.cpp src/glad.c src/Terrain.cpp src/Shader.cpp src/Camera.cpp src/Sun.cpp src/Water.cpp src/GrassField.cpp
-OBJS = $(SRCS:.cpp=.o)
-OBJS := $(OBJS:.c=.o)
-
-# Executável
 TARGET = apk
+CXXFLAGS = -std=c++17 -g -Wall -O3
+
+SRC_DIR = src
+INCLUDE_DIR = include
+OBJ_DIR = obj
+
+SRCS = $(wildcard $(SRC_DIR)/*.cpp) $(wildcard $(SRC_DIR)/*.c)
+OBJS = $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(filter %.cpp, $(SRCS)))
+OBJS += $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(filter %.c, $(SRCS)))
+
+LIBS = -lglfw -lGL -ldl -lassimp
+RM = rm -f
 
 all: $(TARGET)
 
 $(TARGET): $(OBJS)
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LIBS)
+	$(RM) $(OBJS)
 
-# Regra genérica para .cpp e .c
-src/%.o: src/%.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
+	@mkdir -p $(OBJ_DIR)
+	$(CXX) $(CXXFLAGS) -I$(INCLUDE_DIR) -c $< -o $@
 
-src/%.o: src/%.c
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+	@mkdir -p $(OBJ_DIR)
+	$(CXX) $(CXXFLAGS) -I$(INCLUDE_DIR) -c $< -o $@
 
-# Limpeza
 clean:
-	rm -f $(OBJS) $(TARGET)
+	$(RM) $(TARGET)
+	$(RM) -rf $(src)/*.o
+
+.PHONY: all clean

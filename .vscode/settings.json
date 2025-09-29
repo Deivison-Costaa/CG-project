@@ -2,5 +2,8 @@
     "cSpell.words": [
         "glfw",
         "xoffset"
-    ]
+    ],
+    "files.associations": {
+        "iostream": "cpp"
+    }
 }

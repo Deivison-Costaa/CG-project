@@ -64,3 +64,23 @@ void Camera::updateCameraVectors()
     Right = glm::normalize(glm::cross(Front, WorldUp));
     Up = glm::normalize(glm::cross(Right, Front));
 }
+
+void Camera::SetLookAt(glm::vec3 position, glm::vec3 target)
+{
+    Position = position;
+    Front = glm::normalize(target - Position);
+    // Recalcula os vetores Right e Up
+    Right = glm::normalize(glm::cross(Front, WorldUp));
+    Up = glm::normalize(glm::cross(Right, Front));
+
+    // Atualiza os ângulos Yaw e Pitch para que a transição de volta
+    // para o modo manual não seja desorientadora.
+    Pitch = glm::degrees(asin(Front.y));
+    Yaw = glm::degrees(atan2(Front.z, Front.x));
+}
+
+void Camera::InvertPitch()
+{
+    Pitch = -Pitch;
+    updateCameraVectors();
+}

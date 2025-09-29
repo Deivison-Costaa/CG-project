@@ -18,7 +18,7 @@ enum Camera_Movement
 // Valores padrão da câmera
 const float YAW = -90.0f;
 const float PITCH = 0.0f;
-const float SPEED = 25.0f;
+const float SPEED = 45.0f;
 const float SENSITIVITY = 0.1f;
 const float ZOOM = 45.0f;
 
@@ -54,7 +54,13 @@ public:
     // Processa input do scroll do mouse
     void ProcessMouseScroll(float yoffset);
 
-private:
+    // Define a posição da câmera e o ponto para o qual ela deve olhar
+    void SetLookAt(glm::vec3 position, glm::vec3 target);
+
+    // Inverte o valor do Pitch
+    void InvertPitch();
+
+    private :
     // Recalcula os vetores da câmera a partir dos ângulos de Euler
     void updateCameraVectors();
 };
